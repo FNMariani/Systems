@@ -21,6 +21,10 @@ class ASystemsCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	/** First person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FirstPersonCamera;
+
 public:
 	ASystemsCharacter();
 
@@ -71,7 +75,8 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
+	/** Returns FirstPersonCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFirstPersonCamera() const { return FirstPersonCamera; }
 
 private:
 	/*True if the player is currently talking with any pawn*/
@@ -113,6 +118,8 @@ public:
 
 	/*Retrieves the UI reference*/
 	UDialogUI* GetUI() { return UI; }
+
+	void ToggleCamera();
 
 protected:
 	/*The component responsible for playing our SFX*/

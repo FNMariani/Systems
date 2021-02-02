@@ -44,6 +44,12 @@ ASystemsCharacter::ASystemsCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Create a follow camera
+	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FirstPersonCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FirstPersonCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	FirstPersonCamera->bAutoActivate = false;
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
@@ -86,6 +92,8 @@ void ASystemsCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 
 	InputComponent->BindAction("Interact", IE_Pressed, this, &ASystemsCharacter::ToggleTalking);
+
+	InputComponent->BindAction("ChangeCamera", IE_Pressed, this, &ASystemsCharacter::ToggleCamera);
 }
 
 
@@ -246,5 +254,24 @@ void ASystemsCharacter::Talk(FString Excerpt, TArray<FSubtitle>& Subtitles)
 			else if (!Dialog->bShouldAIAnswer) ToggleTalking();
 			break;
 		}
+	}
+}
+
+void ASystemsCharacter::ToggleCamera()
+{
+	if (FirstPersonCamera == nullptr) return;
+	if (FollowCamera == nullptr) return;
+
+	if ((FirstPersonCamera) && (FirstPersonCamera->IsActive()))
+	{
+		//Activate 3rd person
+		FirstPersonCamera->Deactivate();
+		FollowCamera->Activate();
+	}
+	else
+	{
+		//Activate 1st person
+		FollowCamera->Deactivate();
+		FirstPersonCamera->Activate();
 	}
 }

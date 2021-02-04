@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Engine.h"
 #include "GameFramework/Character.h"
 #include "Dialogue/AICharacter.h"
 #include "Dialogue/DialogUI.h"
@@ -24,6 +24,12 @@ class ASystemsCharacter : public ACharacter
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCamera;
+
+
+	//Inventory
+	/** Collection sphere */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* CollectionSphere;
 
 public:
 	ASystemsCharacter();
@@ -133,5 +139,17 @@ protected:
 	/*UI Reference*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UDialogUI* UI;
+
+
+//Inventory
+public:
+	virtual void Tick(float DeltaTime) override;
+
+protected:
+	/** Function to collect every AutoPickup in range. */
+	void CollectAutoPickups();
+
+	/** Function to check for the closest Interactable in sight and in range. */
+	void CheckForInteractables();
 };
 

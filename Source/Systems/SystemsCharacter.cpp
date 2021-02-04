@@ -10,6 +10,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/AudioComponent.h"
 
+//Inventory includes
+#include "Inventory/Interactable.h"
+#include "Inventory/AutoPickup.h"
+#include "Inventory/InventoryItem.h"
+#include "Inventory/SystemsController.h"
+
 //////////////////////////////////////////////////////////////////////////
 // ASystemsCharacter
 
@@ -60,6 +66,12 @@ ASystemsCharacter::ASystemsCharacter()
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(FName("AudioComp"));
 	AudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	//Inventory
+	// Create the collection sphere
+	CollectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollectionSphere"));
+	CollectionSphere->SetupAttachment(RootComponent);
+	CollectionSphere->SetSphereRadius(200.f);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -273,5 +285,69 @@ void ASystemsCharacter::ToggleCamera()
 		//Activate 1st person
 		FollowCamera->Deactivate();
 		FirstPersonCamera->Activate();
+	}
+}
+
+
+//Inventory
+void ASystemsCharacter::Tick(float Deltatime)
+{
+	Super::Tick(Deltatime);
+
+	CollectAutoPickups();
+	CheckForInteractables();
+}
+
+void ASystemsCharacter::CollectAutoPickups()
+{
+	// Get all overlapping Actors and store them in an array
+	TArray<AActor*> CollectedActors;
+	CollectionSphere->GetOverlappingActors(CollectedActors);
+
+	ASystemsController* IController = Cast<ASystemsController>(GetController());
+
+	// For each collected Actor
+	for (int32 iCollected = 0; iCollected < CollectedActors.Num(); ++iCollected)
+	{
+		// Cast the actor to AAutoPickup
+		AAutoPickup* const TestPickup = Cast<AAutoPickup>(CollectedActors[iCollected]);
+		// If the cast is successful and the pickup is valid and active 
+		if (TestPickup && !TestPickup->IsPendingKill())
+		{
+			TestPickup->Collect(IController);
+		}
+	}
+}
+
+void ASystemsCharacter::CheckForInteractables()
+{
+	// Create a LineTrace to check for a hit
+	FHitResult HitResult;
+
+	int32 Range = 500;
+	FVector StartTrace = FollowCamera->GetComponentLocation();
+	FVector EndTrace = (FollowCamera->GetForwardVector() * Range) + StartTrace;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	ASystemsController* IController = Cast<ASystemsController>(GetController());
+
+	if (IController)
+	{
+		// Check if something is hit
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, StartTrace, EndTrace, ECC_Visibility, QueryParams))
+		{
+			// Cast the actor to AInteractable
+			AInteractable* Interactable = Cast<AInteractable>(HitResult.GetActor());
+			// If the cast is successful
+			if (Interactable)
+			{
+				IController->CurrentInteractable = Interactable;
+				return;
+			}
+		}
+
+		IController->CurrentInteractable = nullptr;
 	}
 }

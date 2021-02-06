@@ -151,5 +151,13 @@ protected:
 
 	/** Function to check for the closest Interactable in sight and in range. */
 	void CheckForInteractables();
+
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class AWeapon* AttachedWeapon;
+
+	UFUNCTION()
+	void DetachWeapon();
 };
 

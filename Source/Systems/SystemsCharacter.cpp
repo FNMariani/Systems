@@ -16,6 +16,9 @@
 #include "Inventory/InventoryItem.h"
 #include "Inventory/SystemsController.h"
 
+//Weapons
+#include "Weapons/Weapon.h"
+
 //////////////////////////////////////////////////////////////////////////
 // ASystemsCharacter
 
@@ -106,6 +109,8 @@ void ASystemsCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	InputComponent->BindAction("Talk", IE_Pressed, this, &ASystemsCharacter::ToggleTalking);
 
 	InputComponent->BindAction("ChangeCamera", IE_Pressed, this, &ASystemsCharacter::ToggleCamera);
+
+	InputComponent->BindAction("DropWeapon", IE_Pressed, this, &ASystemsCharacter::DetachWeapon);
 }
 
 
@@ -350,4 +355,11 @@ void ASystemsCharacter::CheckForInteractables()
 
 		IController->CurrentInteractable = nullptr;
 	}
+}
+
+void ASystemsCharacter::DetachWeapon()
+{
+	AttachedWeapon->DetachRootComponentFromParent();
+	AttachedWeapon->WeaponMesh->SetSimulatePhysics(true);
+	AttachedWeapon->WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }

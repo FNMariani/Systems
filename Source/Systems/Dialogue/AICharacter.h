@@ -39,6 +39,12 @@ private:
 	UFUNCTION()
 	void Talk(USoundBase* SFX, TArray<FSubtitle> Subs);
 
+	
+	UFUNCTION()
+	void OnSphereOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void OnSphereEndOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndex);
 
 public:
 	/*Answers to the character after a specified delay*/
@@ -63,4 +69,15 @@ protected:
 	/*The ai lines*/
 	UPROPERTY(EditAnywhere, Category = DialogSystem)
 	UDataTable* AILines;
+
+
+	//Random phrase when player is in range
+	UPROPERTY(EditAnywhere, Category = "Phrases")
+	UDataTable* AIRandomLines;
+
+	UPROPERTY(VisibleAnywhere)
+	class USphereComponent* SphereComp;
+
+	UPROPERTY(EditAnywhere, Category = "Phrases");
+	class UTextRenderComponent* TextRenderActor;
 };

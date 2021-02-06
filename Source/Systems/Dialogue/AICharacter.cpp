@@ -6,6 +6,7 @@
 #include "Components/AudioComponent.h"
 #include "../SystemsCharacter.h"
 #include "Kismet/GameplayStatics.h" 
+#include "Components/TextRenderComponent.h" 
 
 // Sets default values
 AAICharacter::AAICharacter()
@@ -19,6 +20,13 @@ AAICharacter::AAICharacter()
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(FName("AudioComp"));
 	AudioComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+
+	SphereComp = CreateDefaultSubobject<USphereComponent>(FName("SphereComp"));
+	SphereComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	TextRenderActor = CreateDefaultSubobject<UTextRenderComponent>(TEXT("PlayerName"));
+	TextRenderActor->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +37,10 @@ void AAICharacter::BeginPlay()
 	//Register the begin and end overlap functions
 	BoxComp->OnComponentBeginOverlap.AddDynamic(this, &AAICharacter::OnBoxOverlap);
 	BoxComp->OnComponentEndOverlap.AddDynamic(this, &AAICharacter::OnBoxEndOverlap);
+
+
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AAICharacter::OnSphereOverlap);
+	SphereComp->OnComponentEndOverlap.AddDynamic(this, &AAICharacter::OnSphereEndOverlap);
 }
 
 // Called every frame
@@ -78,6 +90,34 @@ void AAICharacter::Talk(USoundBase* SFX, TArray<FSubtitle> Subs)
 	Char->GetUI()->UpdateSubtitles(Subs);
 }
 
+void AAICharacter::OnSphereOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!AIRandomLines) return;
+
+	ASystemsCharacter* MainChar = Cast<ASystemsCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	if (OtherActor == MainChar)
+	{
+		if (OtherComp->ComponentHasTag("Player"))
+		{		
+			//Get all the row names of the table
+			TArray<FName> PlayerOptions = AIRandomLines->GetRowNames();
+
+			//Select random phrase
+			int OptionNumber = FMath::RandRange(0, PlayerOptions.Num() - 1);
+			FString ContextString;
+			FSubtitle* Subtitle = AIRandomLines->FindRow<FSubtitle>(PlayerOptions[OptionNumber], ContextString);
+
+			TextRenderActor->SetText(*Subtitle->Subtitle);
+		}
+	}
+}
+
+void AAICharacter::OnSphereEndOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndex)
+{
+	TextRenderActor->SetText("");
+}
+
 void AAICharacter::AnswerToCharacter(FName PlayerLine, TArray<FSubtitle>& SubtitlesToDisplay, float delay)
 {
 	if (!AILines) return;
@@ -99,4 +139,3 @@ void AAICharacter::AnswerToCharacter(FName PlayerLine, TArray<FSubtitle>& Subtit
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDel, delay, false);
 	}
 }
-

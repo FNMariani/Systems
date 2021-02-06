@@ -103,7 +103,7 @@ void ASystemsCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ASystemsCharacter::OnResetVR);
 
 
-	InputComponent->BindAction("Interact", IE_Pressed, this, &ASystemsCharacter::ToggleTalking);
+	InputComponent->BindAction("Talk", IE_Pressed, this, &ASystemsCharacter::ToggleTalking);
 
 	InputComponent->BindAction("ChangeCamera", IE_Pressed, this, &ASystemsCharacter::ToggleCamera);
 }

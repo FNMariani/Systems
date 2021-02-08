@@ -153,6 +153,9 @@ protected:
 	void CheckForInteractables();
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	FString TextToPickup;
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class AWeapon* AttachedWeapon;

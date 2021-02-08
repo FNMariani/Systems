@@ -20,5 +20,5 @@ void AInteractable::Interact_Implementation(APlayerController* Controller)
 
 FString AInteractable::GetInteractText() const
 {
-	return FString::Printf(TEXT("%s: Press F to %s"), *Name, *Action);
+	return FString::Printf(TEXT("%s: Press E to %s"), *Name, *Action);
 }

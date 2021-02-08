@@ -349,8 +349,13 @@ void ASystemsCharacter::CheckForInteractables()
 			if (Interactable)
 			{
 				IController->CurrentInteractable = Interactable;
+				TextToPickup = Interactable->GetInteractText();
 				return;
 			}
+		}
+		else 
+		{
+			TextToPickup = "";
 		}
 
 		IController->CurrentInteractable = nullptr;
@@ -359,7 +364,8 @@ void ASystemsCharacter::CheckForInteractables()
 
 void ASystemsCharacter::DetachWeapon()
 {
-	AttachedWeapon->DetachRootComponentFromParent();
+	//AttachedWeapon->DetachRootComponentFromParent();
+	AttachedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	AttachedWeapon->WeaponMesh->SetSimulatePhysics(true);
 	AttachedWeapon->WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }

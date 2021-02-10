@@ -39,18 +39,3 @@ bool ASystemsController::AddItemToInventoryByID(FName ID)
 	}
 	return false;
 }
-
-void ASystemsController::SetupInputComponent()
-{
-	Super::SetupInputComponent();
-
-	InputComponent->BindAction("Interact", IE_Pressed, this, &ASystemsController::Interact);
-}
-
-void ASystemsController::Interact()
-{
-	if (CurrentInteractable)
-	{
-		CurrentInteractable->Interact(this);
-	}
-}

@@ -8,6 +8,8 @@
 #include "Dialogue/DialogUI.h"
 #include "SystemsCharacter.generated.h"
 
+class AWeapon;
+
 UCLASS(config=Game)
 class ASystemsCharacter : public ACharacter
 {
@@ -149,18 +151,22 @@ protected:
 	/** Function to collect every AutoPickup in range. */
 	void CollectAutoPickups();
 
-	/** Function to check for the closest Interactable in sight and in range. */
-	void CheckForInteractables();
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	FString TextToPickup;
 
-public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class AWeapon* AttachedWeapon;
+	AWeapon* AttachedWeapon;
+public:	
+	/** Function to check for the closest Interactable in sight and in range. */
+	void CheckForInteractables();
 
 	UFUNCTION()
 	void DetachWeapon();
+
+	UFUNCTION()
+	AWeapon* GetAttachedWeapon();
+
+	UFUNCTION()
+	void SetAttachedWeapon(AWeapon* Weapon);
 };
 

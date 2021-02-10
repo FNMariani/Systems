@@ -111,6 +111,8 @@ void ASystemsCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	InputComponent->BindAction("ChangeCamera", IE_Pressed, this, &ASystemsCharacter::ToggleCamera);
 
 	InputComponent->BindAction("DropWeapon", IE_Pressed, this, &ASystemsCharacter::DetachWeapon);
+
+	InputComponent->BindAction("Interact", IE_Pressed, this, &ASystemsCharacter::CheckForInteractables);
 }
 
 
@@ -300,7 +302,7 @@ void ASystemsCharacter::Tick(float Deltatime)
 	Super::Tick(Deltatime);
 
 	CollectAutoPickups();
-	CheckForInteractables();
+	//CheckForInteractables();
 }
 
 void ASystemsCharacter::CollectAutoPickups()
@@ -349,13 +351,9 @@ void ASystemsCharacter::CheckForInteractables()
 			if (Interactable)
 			{
 				IController->CurrentInteractable = Interactable;
-				TextToPickup = Interactable->GetInteractText();
+				Interactable->Interact(IController);
 				return;
 			}
-		}
-		else 
-		{
-			TextToPickup = "";
 		}
 
 		IController->CurrentInteractable = nullptr;
@@ -364,8 +362,17 @@ void ASystemsCharacter::CheckForInteractables()
 
 void ASystemsCharacter::DetachWeapon()
 {
-	//AttachedWeapon->DetachRootComponentFromParent();
 	AttachedWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	AttachedWeapon->WeaponMesh->SetSimulatePhysics(true);
 	AttachedWeapon->WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
+AWeapon* ASystemsCharacter::GetAttachedWeapon()
+{
+	return AttachedWeapon;
+}
+
+void ASystemsCharacter::SetAttachedWeapon(AWeapon* Weapon)
+{
+	AttachedWeapon = Weapon;
 }

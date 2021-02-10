@@ -27,7 +27,7 @@ void AWeapon::Interact_Implementation(APlayerController* Controller)
 	if (MainChar)
 	{
 		//If has a weapon in hand drop it
-		if(MainChar->AttachedWeapon)
+		if(MainChar->GetAttachedWeapon())
 		{
 			MainChar->DetachWeapon();
 		}
@@ -35,6 +35,6 @@ void AWeapon::Interact_Implementation(APlayerController* Controller)
 		WeaponMesh->SetSimulatePhysics(false);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 		this->AttachToComponent(MainChar->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
-		MainChar->AttachedWeapon = this;
+		MainChar->SetAttachedWeapon(this);
 	}
 }

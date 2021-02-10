@@ -42,9 +42,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 InventoryWeightLimit;
-
-protected:
-	void Interact();
-
-	virtual void SetupInputComponent() override;
 };

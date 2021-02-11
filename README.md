@@ -2,6 +2,7 @@
 
 ### Description
 This project was developed for study purpose. It is made up of simplified versions of different systems.
+All written in C++.
 
 
 ### Features

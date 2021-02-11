@@ -6,19 +6,16 @@ This project was developed for study purpose. It is made up of simplified versio
 
 ### Features
 * Day and Night Cycle
-* Inventory
-* Minimap
-* NPCs
-* Weapons
-
-### Images
-
 ![DayNightCycle](img/DayNightCycle.gif)
 
+* Inventory
 ![Inventory](img/Inventory.gif)
 
+* Minimap
 ![Minimap](img/Minimap.gif)
 
+* NPCs
 ![NPC](img/NPC.gif)
 
+* Weapons
 ![Weapon](img/Weapon.gif)

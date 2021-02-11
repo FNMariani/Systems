@@ -5,17 +5,17 @@ This project was developed for study purpose. It is made up of simplified versio
 
 
 ### Features
-* Day and Night Cycle
+* Day and Night Cycle \
 ![DayNightCycle](img/DayNightCycle.gif)
 
-* Inventory
+* Inventory \
 ![Inventory](img/Inventory.gif)
 
-* Minimap
+* Minimap \
 ![Minimap](img/Minimap.gif)
 
-* NPCs
+* NPCs \
 ![NPC](img/NPC.gif)
 
-* Weapons
+* Weapons \
 ![Weapon](img/Weapon.gif)
